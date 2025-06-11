@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>GIS Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet & Font Awesome -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100%;
+      background: #f7f7f7;
+      border-right: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+
+    .sidebar input {
+      width: 100%;
+      padding: 6px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .sidebar .folder > label {
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+
+    .sidebar .folder i {
+      margin-right: 8px;
+      color: #3164f4;
+    }
+
+    .sidebar .folder ul {
+      margin-left: 20px;
+      padding-left: 0;
+      list-style: none;
+      display: none;
+    }
+
+    .sidebar .folder.open ul {
+      display: block;
+    }
+
+    .sidebar ul li {
+      margin: 5px 0;
+      display: flex;
+      align-items: center;
+      color: #555;
+    }
+
+    .sidebar ul li i {
+      margin-right: 8px;
+      color: #3164f4;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 10px;
+      left: 270px; /* ✅ Rapat kiri */
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+    }
+
+    .top-bar button {
+      background-color: #3164f4;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      left: 260px;
+      right: 0;
+      bottom: 30px;
+      z-index: 0;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 260px;
+      right: 0;
+      height: 30px;
+      background-color: white;
+      font-size: 13px;
+      color: #333;
+      padding-left: 10px;
+      line-height: 30px;
+      border-top: 1px solid #ccc;
+    }
+
+    .right-buttons {
+      position: fixed;
+      right: 10px;
+      top: 160px; /* ✅ Lower position */
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .right-buttons button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: #000;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <input type="text" placeholder="Carian">
+    <div><strong>Layer Tree</strong></div>
+
+    <div class="folder">
+      <label onclick="toggle(this)"><i class="fas fa-folder"></i> Guna Tanah Semasa</label>
+      <ul></ul>
+    </div>
+
+    <div class="folder">
+      <label onclick="toggle(this)"><i class="fas fa-folder"></i> KGT</label>
+      <ul>
+        <li><i class="fas fa-layer-group"></i> Zoning</li>
+        <li><i class="fas fa-layer-group"></i> Plot Ratio</li>
+        <li><i class="fas fa-layer-group"></i> Densiti</li>
+      </ul>
+    </div>
+
+    <div class="folder">
+      <label onclick="toggle(this)"><i class="fas fa-folder"></i> KADASTER</label>
+      <ul></ul>
+    </div>
+
+    <div class="folder">
+      <label onclick="toggle(this)"><i class="fas fa-folder"></i> JARINGAN PENGANGKUTAN</label>
+      <ul>
+        <li><i class="fas fa-layer-group"></i> CCTV</li>
+        <li><i class="fas fa-layer-group"></i> VMS</li>
+        <li><i class="fas fa-layer-group"></i> Panic Button</li>
+        <li><i class="fas fa-layer-group"></i> Speaker PA Sistem</li>
+        <li><i class="fas fa-layer-group"></i> Pengecas EV</li>
+        <li><i class="fas fa-layer-group"></i> Hentian Bas</li>
+        <li><i class="fas fa-layer-group"></i> Lampu Jalan</li>
+        <li><i class="fas fa-layer-group"></i> Lampu Isyarat</li>
+      </ul>
+    </div>
+
+    <div class="folder">
+      <label onclick="toggle(this)"><i class="fas fa-folder"></i> JARINGAN UTILITI</label>
+      <ul>
+        <li><i class="fas fa-layer-group"></i> Cukai</li>
+        <li><i class="fas fa-layer-group"></i> Lesen</li>
+        <li><i class="fas fa-layer-group"></i> Asrama Pekerja</li>
+        <li><i class="fas fa-layer-group"></i> etc</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Butang atas -->
+  <div class="top-bar">
+    <button>Petunjuk</button>
+    <button>Carian</button>
+    <button>Carian Kedudukan</button>
+    <button>Cetak</button>
+  </div>
+
+  <!-- Peta -->
+  <div id="map"></div>
+
+  <!-- Butang kanan dengan fungsi -->
+  <div class="right-buttons">
+    <button onclick="map.zoomIn()" title="Zoom In"><i class="fas fa-plus"></i></button>
+    <button onclick="map.zoomOut()" title="Zoom Out"><i class="fas fa-minus"></i></button>
+    <button onclick="map.setView([8.2876, 88.4949], 7)" title="Reset View"><i class="fas fa-home"></i></button>
+    <button title="Settings"><i class="fas fa-cog"></i></button>
+    <button onclick="location.reload()" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+  </div>
+
+  <!-- Koordinat -->
+  <div class="bottom-bar" id="coords">
+    Lat: 0 | Long: 0 | Tahap: 0
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map', {
+      zoomControl: false // ✅ Buang default zoom button Leaflet
+    }).setView([8.2876, 88.4949], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    map.on('mousemove', function(e) {
+      document.getElementById('coords').innerText =
+        `Lat: ${e.latlng.lat.toFixed(4)} | Long: ${e.latlng.lng.toFixed(4)} | Tahap: ${map.getZoom()}`;
+    });
+
+    function toggle(label) {
+      label.parentElement.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
