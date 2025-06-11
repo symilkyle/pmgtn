@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permohonan Pengesahan Pengezonan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 700px;
+            background-color: #2e2d6d;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background-color: #2e2d6d;
+            color: white;
+            padding: 20px 30px;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: #2e2d6d;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .section-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        /* Form styles */
+        .form-section {
+            margin-bottom: 25px;
+        }
+        
+        .form-section-title {
+            color: #2e2d6d;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.15s ease-in-out;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2e2d6d;
+        }
+        
+        select.form-input {
+            height: 36px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        /* Footer styles */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .button {
+            background-color: white;
+            color: #2e2d6d;
+            border: 2px solid #2e2d6d;
+            padding: 8px 30px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            background-color: #2e2d6d;
+            color: white;
+        }
+        
+        .button-back {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ced4da;
+            padding: 8px 30px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .button-back:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        
+        .button-submit {
+            background-color: #2e2d6d;
+            color: white;
+            border: 2px solid #2e2d6d;
+            padding: 8px 30px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .button-submit:hover {
+            background-color: #23225a;
+            border-color: #23225a;
+        }
+        
+        .progress-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .progress-bar {
+            width: 150px;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #2e2d6d;
+            transition: width 0.3s ease;
+        }
+        
+        .page-indicator {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        #page3 .form-section-title {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 10px;
+        }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #2e2d6d;
+        }
+        
+        /* Upload box styles */
+        .upload-box {
+            border: 2px dashed #ced4da;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .upload-button {
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+        
+        .upload-button:hover {
+            color: #2e2d6d;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-width: 400px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-color: #2e2d6d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .checkmark {
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .modal-message {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        
+        .modal-button {
+            background-color: #2e2d6d;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-button:hover {
+            background-color: #23225a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Permohonan Pengesahan Pengezonan
+        </div>
+        
+        <div class="content">
+            <!-- Page 1: Information -->
+            <div id="page1" class="page active">
+                <div class="section">
+                    <div class="section-title">Makluman</div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Permohonan</div>
+                    <div class="section-content">
+                        Pemohon perlu menghantar surat permohonan rasmi yang lengkap kepada Jabatan Perancang 				Bandar MBJB. Permohonan mestilah mengandungi maklumat tapak, tujuan permohonan dan dokumen 			sokongan seperti pelan atau gambar lokasi.
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Proses</div>
+                    <div class="section-content">
+                        Permohonan akan diproses dalam tempoh 14 hari bekerja selepas penerimaan.
+			Semakan akan dibuat berdasarkan kesesuaian tapak, RTDJB, dasar serta garis panduan semasa.
+			Ulasan dan surat maklumbalas rasmi akan dikeluarkan setelah disahkan oleh Ketua Jabatan.
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Pertanyaan</div>
+                    <div class="section-content">
+                        Jika terdapat sebarang masalah, sila hubungi Unit Perancang, Jabatan Perancang 
+                        Bandar di Talian Tel: 07-219 8000
+			Email: info@mbjb.gov.my
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <button class="button" onclick="goToPage(2)">Next</button>
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 33.33%"></div>
+                        </div>
+                        <span class="page-indicator">Page 1 of 3</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page 2: Applicant Information -->
+            <div id="page2" class="page">
+                <form id="applicationForm">
+                    <div class="form-section">
+                        <h2 class="form-section-title">Maklumat Pemohon</h2>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Nama Penuh <span class="required">*</span></label>
+                            <input type="text" class="form-input" placeholder="Masukkan nama penuh seperti dalam kad pengenalan" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">No. Kad Pengenalan <span class="required">*</span></label>
+                                <input type="text" class="form-input" id="icNumber" placeholder="XXXXXX-XX-XXXX" pattern="\d{6}-\d{2}-\d{4}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">No. Telefon <span class="required">*</span></label>
+                                <input type="tel" class="form-input" placeholder="01X-XXXXXXX" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Alamat E-mel <span class="required">*</span></label>
+                            <input type="email" class="form-input" placeholder="nama@email.com" required>
+                            <p class="help-text">Maklumat permohonan akan dihantar ke e-mel ini</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Alamat Surat Menyurat <span class="required">*</span></label>
+                            <input type="text" class="form-input" placeholder="Alamat penuh" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Poskod <span class="required">*</span></label>
+                                <input type="text" class="form-input" placeholder="XXXXX" pattern="\d{5}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Negeri <span class="required">*</span></label>
+                                <select class="form-input" required>
+                                    <option value="">Pilih Negeri</option>
+                                    <option value="PNG">Pulau Pinang</option>
+                                    <option value="KDH">Kedah</option>
+                                    <option value="PRK">Perak</option>
+                                    <option value="PLS">Perlis</option>
+                                    <option value="SEL">Selangor</option>
+                                    <option value="NSN">Negeri Sembilan</option>
+                                    <option value="MLK">Melaka</option>
+                                    <option value="JHR">Johor</option>
+                                    <option value="PHG">Pahang</option>
+                                    <option value="TRG">Terengganu</option>
+                                    <option value="KEL">Kelantan</option>
+                                    <option value="SRW">Sarawak</option>
+                                    <option value="SBH">Sabah</option>
+                                    <option value="WPK">WP Kuala Lumpur</option>
+                                    <option value="WPL">WP Labuan</option>
+                                    <option value="WPP">WP Putrajaya</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2 class="form-section-title">Maklumat Tanah/Lot</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">No. Lot <span class="required">*</span></label>
+                                <input type="text" class="form-input" placeholder="Contoh: 1234" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Mukim <span class="required">*</span></label>
+                                <select class="form-input" required>
+                                    <option value="">Pilih Mukim</option>
+                                    <option value="MK01">Mukim 1</option>
+                                    <option value="MK02">Mukim 2</option>
+                                    <option value="MK03">Mukim 3</option>
+                                    <option value="MK04">Mukim 4</option>
+                                    <option value="MK05">Mukim 5</option>
+                                    <option value="MK06">Mukim 6</option>
+                                    <option value="MK07">Mukim 7</option>
+                                    <option value="MK08">Mukim 8</option>
+                                    <option value="MK09">Mukim 9</option>
+                                    <option value="MK10">Mukim 10</option>
+                                    <option value="MK11">Mukim 11</option>
+                                    <option value="MK12">Mukim 12</option>
+                                    <option value="MK13">Mukim 13</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Daerah <span class="required">*</span></label>
+                            <select class="form-input" required>
+                                <option value="">Pilih Daerah</option>
+                                <option value="SPS">Larkin</option>
+                                <option value="SPT">Stulang</option>
+                                <option value="SPU">Johor Jaya</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="footer">
+                    <div class="button-group">
+                        <button class="button button-back" onclick="goToPage(1)">Previous</button>
+                        <button class="button" onclick="validateAndNext()">Next</button>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 66.66%"></div>
+                        </div>
+                        <span class="page-indicator">Page 2 of 3</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page 3: Document Upload -->
+            <div id="page3" class="page">
+                <div class="form-section">
+                    <div class="form-section-title">Salinan Geran*</div>
+                    <div class="section-content" style="margin-bottom: 15px; font-size: 13px;">
+                        Sila muat naik geran yang lengkap (beserta pelan lokasi). Jika Lot PT, sila pastikan pelan lokasi 
+                        yang menunjukkan lot sekitar yang bukan lot PT (untuk rujukan pihak jabatan) atau dokumen 
+                        lain yang berkaitan.
+                    </div>
+                    <div class="upload-box">
+                        <button class="upload-button" onclick="triggerFileUpload('geran')">Drop file here or select file</button>
+                        <input type="file" id="geran-file" style="display: none;" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'geran')">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-section-title">Salinan Dokumen Sokongan</div>
+                    <div class="section-content" style="margin-bottom: 15px; font-size: 13px;">
+                        Sila muat naik (jika ada) dokumen sokongan tambahan (contoh : surat kelulusan 
+                        perlindungan semula / kelulusan permohonan kebenaran merancang) untuk rujukan jabatan.
+                    </div>
+                    <div class="upload-box">
+                        <button class="upload-button" onclick="triggerFileUpload('dokumen')">Drop file here or select file</button>
+                        <input type="file" id="dokumen-file" style="display: none;" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'dokumen')">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-section-title">Pilihan Penerimaan Surat Pengesahan Pengezonan*</div>
+                    <select class="form-input" required>
+                        <option value="">-Please select-</option>
+                        <option value="email">Emel</option>
+                        <option value="collection">Kutipan Sendiri</option>
+                    </select>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-section-title">Nota Serahan</div>
+                    <div class="section-content" style="font-size: 13px;">
+                        Surat Pengesahan Pengezonan yang boleh dikutip bagi penerimaan secara serahan tangan 
+                        akan dipos ke alamat surat - menyurat selepas dua (2) minggu surat dikeluarkan.
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-section-title">Salinan Surat Melalui Emel</div>
+                    <div class="section-content" style="font-size: 13px;">
+                        Satu salinan daripada Surat Pengesahan Pengezonan akan di emel ke pemohon
+                    </div>
+                </div>
+                
+                <div class="form-section" style="background-color: #fef3e3; padding: 20px; border-radius: 4px; border: 1px solid #fad4a6;">
+                    <div class="form-section-title" style="color: #d84315;">Pengesahan & Pengakuan*</div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 14px;">
+                            <input type="checkbox" id="pdpa-checkbox" style="margin-right: 10px; margin-top: 3px;" required>
+                            <span style="line-height: 1.6; color: #333;">
+                                Saya mengesahkan bahawa semua maklumat yang diberikan adalah benar dan tepat. 
+                                Saya faham bahawa maklumat peribadi saya akan digunakan untuk tujuan pemprosesan 
+                                permohonan ini sahaja dan akan dilindungi mengikut Akta Perlindungan Data Peribadi 2010 (PDPA). 
+                                Saya juga faham bahawa permohonan yang mengandungi maklumat palsu boleh ditolak atau 
+                                dibatalkan tanpa sebarang bayaran balik.
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <div class="button-group">
+                        <button class="button button-Kembali" onclick="goToPage(2)">Back</button>
+                        <button class="button button-Hantar" onclick="submitForm()">Submit</button>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                        <span class="page-indicator">Page 3 of 3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="success-icon">
+                <span class="checkmark">✓</span>
+            </div>
+            <h2 class="modal-title">Permohonan Berjaya Dihantar</h2>
+            <p class="modal-message">
+                Terima kasih. Permohonan anda telah berjaya dihantar. 
+                Sila semak e-mel anda untuk pengesahan penerimaan dan bil bayaran. 
+                Permohonan akan diproses selepas pembayaran dibuat.
+            </p>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                No. Rujukan: <strong>PZ/2025/<span id="refNumber"></span></strong>
+            </p>
+            <p style="font-size: 12px; color: #888; margin-bottom: 25px; font-style: italic;">
+                Sila simpan nombor rujukan ini untuk urusan semakan kemudian.
+            </p>
+            <button class="modal-button" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentPage = 1;
+        
+        function goToPage(pageNumber) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show requested page
+            document.getElementById('page' + pageNumber).classList.add('active');
+            
+            // Update progress bar
+            const progressPercentage = (pageNumber / 3) * 100;
+            document.querySelectorAll('.progress-fill').forEach(fill => {
+                fill.style.width = progressPercentage + '%';
+            });
+            
+            // Update page indicator
+            document.querySelectorAll('.page-indicator').forEach(indicator => {
+                indicator.textContent = 'Page ' + pageNumber + ' of 3';
+            });
+            
+            currentPage = pageNumber;
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        function validateAndNext() {
+            const form = document.getElementById('applicationForm');
+            if (form.checkValidity()) {
+                goToPage(3);
+            } else {
+                form.reportValidity();
+            }
+        }
+        
+        function submitForm() {
+            // Check if required fields on page 3 are filled
+            const deliveryMethod = document.querySelector('#page3 select').value;
+            const geranFile = document.getElementById('geran-file').files.length;
+            const pdpaCheckbox = document.getElementById('pdpa-checkbox').checked;
+            
+            if (!deliveryMethod) {
+                alert('Sila pilih pilihan penerimaan surat pengesahan pengezonan.');
+                return;
+            }
+            
+            if (geranFile === 0) {
+                alert('Sila muat naik salinan geran.');
+                return;
+            }
+            
+            if (!pdpaCheckbox) {
+                alert('Sila tandakan kotak pengesahan sebelum menghantar permohonan.');
+                return;
+            }
+            
+            // Generate reference number
+            const refNumber = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('refNumber').textContent = refNumber;
+            
+            // Show success modal
+            document.getElementById('successModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('show');
+            // Reset form and go back to first page
+            document.getElementById('applicationForm').reset();
+            // Reset file upload buttons
+            document.querySelectorAll('.upload-button').forEach(button => {
+                button.textContent = 'Muat Naik Dokumen';
+                button.style.color = '#6c757d';
+                button.style.fontWeight = 'normal';
+            });
+            // Reset PDPA checkbox
+            document.getElementById('pdpa-checkbox').checked = false;
+            goToPage(1);
+        }
+        
+        function triggerFileUpload(type) {
+            document.getElementById(type + '-file').click();
+        }
+        
+        function handleFileSelect(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                const uploadBox = event.target.parentElement;
+                const uploadButton = uploadBox.querySelector('.upload-button');
+                uploadButton.textContent = file.name;
+                uploadButton.style.color = '#2e2d6d';
+                uploadButton.style.fontWeight = '500';
+            }
+        }
+        
+        // Format IC number input
+        document.addEventListener('DOMContentLoaded', function() {
+            const icInput = document.getElementById('icNumber');
+            if (icInput) {
+                icInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 6) {
+                        value = value.slice(0, 6) + '-' + value.slice(6);
+                    }
+                    if (value.length >= 9) {
+                        value = value.slice(0, 9) + '-' + value.slice(9);
+                    }
+                    e.target.value = value;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
