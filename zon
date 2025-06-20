@@ -2211,63 +2211,24 @@
     </div>
     
     <!-- Leaflet JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    
-    <script>
-        let currentPage = 1;
-        let currentView = 'landing'; // 'landing', 'form', 'semakan', 'admin', or 'siteInspection'
-        let map; // Global map variable
-        
-        // Initialize OpenStreetMap like the example
-        function initializeMap() {
-            // Check if we're on the site inspection page and map container exists
-            if (currentView === 'siteInspection' && document.getElementById('realMap')) {
-                // Initialize map centered on broader Johor Bahru area like the example
-                map = L.map('realMap').setView([1.4655, 103.7578], 13);
-                
-                // Add OpenStreetMap tiles - same as the example shown
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    maxZoom: 19,
-                    minZoom: 10
-                }).addTo(map);
-                
-                // Add markers for different areas visible in Johor Bahru
-                const lotMarker = L.marker([1.4927, 103.7414]).addTo(map);
-                lotMarker.bindPopup('<b>Lot 2456</b><br>Mukim Bandar<br>0.25 ekar - Perumahan').openPopup();
-                
-                // Add marker for Tampoi area
-                const tampoiMarker = L.marker([1.4838, 103.7249]).addTo(map);
-                tampoiMarker.bindPopup('<b>Kawasan Tampoi</b><br>Mukim Plentong');
-                
-                // Add marker for Larkin area  
-                const larkinMarker = L.marker([1.4728, 103.7469]).addTo(map);
-                larkinMarker.bindPopup('<b>Kawasan Larkin</b><br>Mukim Bandar');
-                
-                // Add marker for Tebrau area
-                const tebrauMarker = L.marker([1.5055, 103.7844]).addTo(map);
-                tebrauMarker.bindPopup('<b>Kawasan Tebrau</b><br>Mukim Tebrau');
-                
-                // Sample area polygon for main inspection lot
-                const zoneBounds = [
-                    [1.4920, 103.7400],
-                    [1.4935, 103.7400], 
-                    [1.4935, 103.7430],
-                    [1.4920, 103.7430]
-                ];
-                
-                const zonePolygon = L.polygon(zoneBounds, {
-                    color: '#e74c3c',
-                    weight: 2,
-                    fillColor: '#e74c3c',
-                    fillOpacity: 0.1
-                }).addTo(map);
-                
-                zonePolygon.bindPopup('Kawasan Semakan Lot 2456<br>Zon Perumahan - Mukim Bandar');
-                
-                // Add scale control
-                L.control.scale().addTo(map);
-            }
+   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map', {
+      zoomControl: false // ✅ Buang default zoom button Leaflet
+    }).setView([8.2876, 88.4949], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    map.on('mousemove', function(e) {
+      document.getElementById('coords').innerText =
+        `Lat: ${e.latlng.lat.toFixed(4)} | Long: ${e.latlng.lng.toFixed(4)} | Tahap: ${map.getZoom()}`;
+    });
+
+    function toggle(label) {
+      label.parentElement.classList.toggle('open');
+    }
         }
         
         // Page Navigation Functions
