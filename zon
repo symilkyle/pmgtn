@@ -1,0 +1,2733 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permohonan Pengesahan Pengezonan</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Government Header Styles */
+        .government-header {
+            background-color: white;
+            border-bottom: 3px solid #1f4e79;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+        
+        .gov-header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+        
+        .gov-header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .system-title {
+            color: #1f4e79;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            max-width: 600px;
+        }
+        
+        .gov-header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .admin-dropdown {
+            position: relative;
+        }
+        
+        .admin-button {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-button:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        .admin-dropdown-arrow {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .admin-dropdown:hover .admin-dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .admin-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            list-style: none;
+            margin: 0;
+            padding: 8px 0;
+            min-width: 150px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .admin-dropdown:hover .admin-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .admin-dropdown-link {
+            color: #333;
+            text-decoration: none;
+            padding: 8px 20px;
+            display: block;
+            transition: background-color 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .admin-dropdown-link:hover {
+            background-color: #f5f5f5;
+        }
+        
+        /* Navigation Styles */
+        .main-nav {
+            background-color: #2e2d6d;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 83px;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+        }
+        
+        .nav-title {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 30px;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .dropdown-arrow {
+            font-size: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            list-style: none;
+            margin: 0;
+            padding: 8px 0;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-link {
+            color: #333;
+            text-decoration: none;
+            padding: 8px 20px;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dropdown-link:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .dropdown-link.active {
+            background-color: #2e2d6d;
+            color: white;
+        }
+        
+        /* Main Content Container */
+        .main-content {
+            min-height: calc(100vh - 133px);
+        }
+        
+        /* Landing Page Styles */
+        .landing-page {
+            background-color: #f8f9fa;
+            min-height: calc(100vh - 133px);
+        }
+        
+        .landing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .landing-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .landing-left {
+            padding-right: 20px;
+        }
+        
+        .intro-section h2 {
+            color: #2e2d6d;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        
+        .intro-section p {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+        
+        .features-list {
+            color: #333;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        
+        .features-list li {
+            margin-bottom: 15px;
+        }
+        
+        .features-list ul {
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .features-list ul li {
+            margin-bottom: 8px;
+        }
+        
+        .cta-section {
+            text-align: left;
+        }
+        
+        .cta-button {
+            background-color: #2e2d6d;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(46, 45, 109, 0.3);
+        }
+        
+        .cta-button:hover {
+            background-color: #23225a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 45, 109, 0.4);
+        }
+        
+        .landing-right {
+            padding-left: 20px;
+        }
+        
+        .hero-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Form Page Styles */
+        .form-page {
+            background-color: #f5f5f5;
+            min-height: calc(100vh - 133px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+        }
+        
+        /* Fixed Semakan Page Styles */
+        .semakan-page {
+            background-color: #f5f5f5;
+            min-height: calc(100vh - 133px);
+            padding: 40px 20px;
+            width: 100%;
+        }
+        
+        .semakan-container {
+            width: 100%;
+            max-width: 1400px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .semakan-header {
+            background-color: #2e2d6d;
+            color: white;
+            padding: 20px 30px;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .search-section {
+            padding: 30px;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
+        }
+        
+        .search-button {
+            background-color: #2e2d6d;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            height: 36px;
+        }
+        
+        .search-button:hover {
+            background-color: #23225a;
+        }
+        
+        .table-section {
+            padding: 30px;
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            table-layout: fixed;
+        }
+        
+        .data-table th {
+            background-color: #2e2d6d;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            border-right: 1px solid #3a3a7a;
+            white-space: nowrap;
+        }
+        
+        .data-table th:last-child {
+            border-right: none;
+        }
+        
+        .data-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+        
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+            min-width: 80px;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-processing {
+            background-color: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .action-button {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-right: 5px;
+            margin-bottom: 3px;
+            min-width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-button:hover {
+            background-color: #138496;
+            transform: scale(1.1);
+        }
+        
+        .action-button.download {
+            background-color: #28a745;
+        }
+        
+        .action-button.download:hover {
+            background-color: #218838;
+            transform: scale(1.1);
+        }
+        
+        .action-button.view {
+            background-color: #007bff;
+        }
+        
+        .action-button.view:hover {
+            background-color: #0056b3;
+        }
+        
+        .action-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Real OpenStreetMap Styles - matching the example */
+        .gis-map-container {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 500px;
+            position: relative;
+        }
+        
+        #realMap {
+            width: 100%;
+            height: 100%;
+            font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        }
+        
+        /* Override Leaflet popup styles to match MBJB theme */
+        .leaflet-popup-content-wrapper {
+            background-color: #2e2d6d;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+        }
+        
+        .leaflet-popup-content {
+            margin: 8px 12px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .leaflet-popup-tip {
+            background-color: #2e2d6d;
+        }
+        
+        /* Style the attribution to match the example */
+        .leaflet-control-attribution {
+            background-color: rgba(255, 255, 255, 0.8);
+            font-size: 11px;
+            color: #333;
+        }
+        
+        .leaflet-control-attribution a {
+            color: #0078A8;
+            text-decoration: none;
+        }
+        
+        /* Scale control styling */
+        .leaflet-control-scale {
+            font-size: 11px;
+        }
+        
+        /* Custom marker styling */
+        .leaflet-marker-icon {
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        /* Document Listing Styles */
+        .document-listing {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .document-item:hover {
+            border-color: #2e2d6d;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(46, 45, 109, 0.1);
+        }
+        
+        .document-info {
+            flex: 1;
+        }
+        
+        /* Remove old document-title styles */
+        .document-title {
+            display: none;
+        }
+        
+        .document-filename {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2e2d6d;
+            margin-bottom: 4px;
+        }
+        
+        .document-details {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .document-actions-simple {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn-icon {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn-icon:hover {
+            border-color: #2e2d6d;
+            color: #2e2d6d;
+        }
+        
+        .action-btn-icon.view:hover {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+        
+        .action-btn-icon.download:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        /* Site Action Button Styles */
+        .site-action-btn {
+            background-color: #2e2d6d;
+            color: white;
+            border: 2px solid #2e2d6d;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .site-action-btn:hover {
+            background-color: #23225a;
+            border-color: #23225a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(46, 45, 109, 0.3);
+        }
+        
+        .site-action-btn:active {
+            transform: translateY(0);
+        }
+        .map-toolbar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 15;
+        }
+        
+        .map-tool-btn-small {
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #555;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        }
+        
+        .map-tool-btn-small:hover {
+            background-color: #f0f0f0;
+            border-color: #999;
+            color: #333;
+        }
+        
+        .map-tool-btn-small:active {
+            transform: scale(0.95);
+            background-color: #e0e0e0;
+        }
+        
+        /* Remove old map controls */
+        .map-controls {
+            display: none;
+        }
+        
+        /* Remove old legend */
+        .map-legend {
+            display: none;
+        }
+        
+        /* Remove old map info box */
+        .map-info-box {
+            display: none;
+        }
+        
+        /* Remove old document cards */
+        .document-card {
+            display: none;
+        }
+        
+        /* Remove old lot marker styles */
+        .lot-marker,
+        .enhanced-lot,
+        .marker-pin,
+        .marker-label {
+            display: none;
+        }
+        
+        .map-info-box {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 200px;
+            z-index: 10;
+        }
+        
+        .map-info-box h4 {
+            color: #2e2d6d;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .map-info-box p {
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        
+        .map-legend h5 {
+            color: #2e2d6d;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+        
+        .legend-item span {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        /* Document Card Styles */
+        .document-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .document-card:hover {
+            border-color: #2e2d6d;
+            box-shadow: 0 4px 12px rgba(46, 45, 109, 0.1);
+        }
+        
+        .document-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .document-card h4 {
+            color: #2e2d6d;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .document-card p {
+            color: #6c757d;
+            font-size: 12px;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+        
+        .document-actions {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .form-page .container {
+            width: 700px;
+            max-width: 90%;
+            background-color: #2e2d6d;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 0 auto;
+        }
+        
+        .header {
+            background-color: #2e2d6d;
+            color: white;
+            padding: 20px 30px;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        /* Timeline Styles */
+        .timeline-container {
+            background-color: #f8f9fa;
+            padding: 30px 50px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin: 0 auto;
+            max-width: 500px;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e0e0;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        
+        .timeline-progress {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 2px;
+            background-color: #2e2d6d;
+            transform: translateY(-50%);
+            z-index: 2;
+            transition: width 0.3s ease;
+        }
+        
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+            background-color: #f8f9fa;
+            padding: 0 15px;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .step-circle.completed {
+            background-color: #2e2d6d;
+            color: white;
+        }
+        
+        .step-circle.active {
+            background-color: #2e2d6d;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step-circle.inactive {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            line-height: 1.3;
+            max-width: 80px;
+        }
+        
+        .step-label.active {
+            color: #2e2d6d;
+            font-weight: 600;
+        }
+        
+        .step-label.completed {
+            color: #2e2d6d;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: #2e2d6d;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .section-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+            text-align: justify;
+        }
+        
+        /* Form styles */
+        .form-section {
+            margin-bottom: 25px;
+        }
+        
+        .form-section-title {
+            color: #2e2d6d;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.15s ease-in-out;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2e2d6d;
+        }
+        
+        select.form-input {
+            height: 36px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        /* Footer styles */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .button {
+            background-color: white;
+            color: #2e2d6d;
+            border: 2px solid #2e2d6d;
+            padding: 8px 30px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            background-color: #2e2d6d;
+            color: white;
+        }
+        
+        .button-back {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ced4da;
+            padding: 8px 30px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .button-back:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        
+        .button-submit {
+            background-color: #2e2d6d;
+            color: white;
+            border: 2px solid #2e2d6d;
+            padding: 8px 30px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .button-submit:hover {
+            background-color: #23225a;
+            border-color: #23225a;
+        }
+        
+        #page3 .form-section-title {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 10px;
+        }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #2e2d6d;
+        }
+        
+        /* Upload box styles */
+        .upload-box {
+            border: 2px dashed #ced4da;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .upload-button {
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+        
+        .upload-button:hover {
+            color: #2e2d6d;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-width: 400px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-color: #2e2d6d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .checkmark {
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .modal-message {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        
+        .modal-button {
+            background-color: #2e2d6d;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-button:hover {
+            background-color: #23225a;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .semakan-container {
+                margin: 0 10px;
+            }
+            
+            .admin-search-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .search-button {
+                justify-self: start;
+                width: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .semakan-page {
+                padding: 20px 10px;
+            }
+            
+            .semakan-header {
+                padding: 15px 20px;
+                font-size: 18px;
+            }
+            
+            .search-section,
+            .table-section {
+                padding: 20px;
+            }
+            
+            .data-table {
+                font-size: 12px;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 8px 4px;
+            }
+            
+            .action-button {
+                padding: 6px 8px;
+                font-size: 14px;
+                margin-right: 3px;
+                min-width: 30px;
+                height: 30px;
+            }
+            
+            .timeline-container {
+                padding: 20px 30px;
+            }
+            
+            .timeline {
+                max-width: 400px;
+            }
+            
+            .step-circle {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+            
+            .step-label {
+                font-size: 10px;
+                max-width: 70px;
+            }
+            
+            .timeline-step {
+                padding: 0 10px;
+            }
+            
+            .gov-header-container {
+                flex-direction: column;
+                height: auto;
+                padding: 10px 20px;
+                gap: 15px;
+            }
+            
+            .system-title {
+                font-size: 16px;
+                text-align: center;
+            }
+            
+            .main-nav {
+                top: auto;
+                position: relative;
+            }
+            
+            .landing-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .landing-left,
+            .landing-right {
+                padding: 0;
+            }
+            
+            /* Site Inspection Mobile Styles */
+            .semakan-page {
+                padding: 20px 10px;
+            }
+            
+            .semakan-container {
+                width: 98%;
+            }
+            
+            .semakan-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 15px 20px;
+                font-size: 16px;
+            }
+            
+            .search-section,
+            .table-section {
+                padding: 20px 15px;
+            }
+            
+            .gis-map-container {
+                height: 300px;
+            }
+            
+            .map-info-box {
+                position: relative;
+                margin-bottom: 15px;
+                width: calc(100% - 30px);
+                top: auto;
+                left: auto;
+            }
+            
+            .map-toolbar {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                gap: 5px;
+            }
+            
+            .map-tool-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 14px;
+            }
+            
+            .document-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .document-actions .action-button {
+                width: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Government Header -->
+    <div class="government-header">
+        <div class="gov-header-container">
+            <div class="gov-header-left">
+                <div class="system-title">
+                    SISTEM PEMANTAUAN DAN PELAKSANAAN<br>
+                    RANCANGAN PEMAJUAN <em>MBJB</em>
+                </div>
+            </div>
+            
+            <div class="gov-header-right">
+                <div class="state-logos">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjgiIGZpbGw9IiMxZjRlNzkiIHN0cm9rZT0iZ29sZCIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Ik0yMCAyMEw0MCAyMEwzNSAzMEwyNSAzMFoiIGZpbGw9InJlZCIvPgo8cGF0aCBkPSJNMjUgMzBMMzUgMzBMMzAgNDBaIiBmaWxsPSJ3aGl0ZSIvPgo8dGV4dCB4PSIzMCIgeT0iNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Sk9IT1I8L3RleHQ+Cjwvc3ZnPg==" alt="Johor Logo" class="state-logo">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjgiIGZpbGw9IiMyZTJkNmQiIHN0cm9rZT0iZ29sZCIgc3Ryb2tlLXdpZHRoPSI0Ii8+Cjx0ZXh0IHg9IjMwIiB5PSIyNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TUJKQPY8L3RleHQ+Cjx0ZXh0IHg9IjMwIiB5PSIzOCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5KT0hPUjwvdGV4dD4KPC9zdmc+" alt="MBJB Logo" class="state-logo">
+                </div>
+                
+                <div class="admin-dropdown">
+                    <button class="admin-button">
+                        Admin User
+                        <span class="admin-dropdown-arrow">▼</span>
+                    </button>
+                    <ul class="admin-dropdown-menu">
+                        <li><a href="#" class="admin-dropdown-link">Profil</a></li>
+                        <li><a href="#" class="admin-dropdown-link">Tetapan</a></li>
+                        <li><a href="#" class="admin-dropdown-link">Log Keluar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-title">
+                <span>Pengesahan Zon Guna Tanah</span>
+            </div>
+            
+            <ul class="nav-menu" id="mainNavMenu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showLandingPage()">Menu Utama</a>
+                </li>
+                <li class="nav-item dropdown" id="permohonanDropdown">
+                    <a href="#" class="nav-link dropdown-toggle">Permohonan <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="dropdown-link" onclick="showFormPage()">Borang Permohonan</a></li>
+                        <li><a href="#" class="dropdown-link" onclick="showSemakanPage()">Semakan Permohonan</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item" id="adminNav">
+                    <a href="#" class="nav-link" onclick="showAdminPage()">Admin</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Landing Page -->
+        <div id="landingPage" class="landing-page">
+            <div class="landing-container">
+                <div class="landing-content">
+                    <div class="landing-left">
+                        <div class="intro-section">
+                            <h2>Pengenalan</h2>
+                            <p>
+                                Pengesahan Zon Guna Tanah adalah suatu proses semakan rasmi yang dijalankan oleh Pihak Berkuasa Perancang Tempatan (PBPT) bagi menentukan status guna tanah sesuatu lot atau tapak berdasarkan pelan guna tanah yang telah diluluskan melalui Rancangan Tempatan (RT) yang berkuat kuasa. Proses ini dilaksanakan di bawah peruntukan Seksyen 16, Akta Perancangan Bandar dan Desa 1976 (Akta 172).
+                            </p>
+                            <p>
+                                Maklumat yang diperoleh melalui pengesahan ini bertujuan memberi kepastian kepada pemilik tanah, pemaju, perunding atau mana-mana pihak berkepentingan berhubung jenis guna tanah yang dibenarkan dari sudut perancangan.
+                            </p>
+                            <p>
+                                Pengesahan ini adalah bersifat perancangan sahaja dan <strong>tidak mewakili pengesahan terhadap hak milik, sempadan tanah atau kategori tanah seperti yang tercatat dalam dokumen hak milik.</strong>
+                            </p>
+                            <p style="margin-top: 30px; font-weight: 500;">
+                                Untuk memohon pengesahan zon guna tanah bagi lot atau tapak anda, sila klik butang di bawah untuk mengisi borang permohonan secara dalam talian.
+                            </p>
+                            
+                            <div class="cta-section">
+                                <button class="cta-button" onclick="showFormPage()">BORANG PERMOHONAN</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="landing-right">
+                        <div class="hero-image">
+                            <div style="width: 100%; height: 300px; background: linear-gradient(135deg, #87CEEB 0%, #98DBFF 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: #2e2d6d; font-size: 24px; font-weight: bold;">
+                                SISTEM MBJB
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Page -->
+        <div id="formPage" class="form-page" style="display: none;">
+            <div class="container">
+                <div class="header">
+                    Permohonan Pengesahan Pengezonan
+                </div>
+                <!-- Timeline Section -->
+                <div class="timeline-container">
+                    <div class="timeline">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-progress" id="timelineProgress"></div>
+                        
+                        <div class="timeline-step">
+                            <div class="step-circle active" id="step1">1</div>
+                            <div class="step-label active" id="label1">Maklumat<br>Permohonan</div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="step-circle inactive" id="step2">2</div>
+                            <div class="step-label" id="label2">Maklumat<br>Pemohon</div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="step-circle inactive" id="step3">3</div>
+                            <div class="step-label" id="label3">Dokumen &<br>Pengesahan</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content">
+                    <!-- Page 1: Information -->
+                    <div id="page1" class="page active">
+                        <div class="section">
+                            <div class="section-title">Makluman</div>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">Permohonan</div>
+                            <div class="section-content">
+                                Pemohon perlu menghantar surat permohonan rasmi yang lengkap kepada Jabatan Perancang Bandar MBJB. Permohonan mestilah mengandungi maklumat tapak, tujuan permohonan dan dokumen sokongan seperti pelan atau gambar lokasi.
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">Proses</div>
+                            <div class="section-content">
+                                Permohonan akan diproses dalam tempoh 14 hari bekerja selepas penerimaan.
+                                Semakan akan dibuat berdasarkan kesesuaian tapak, RTDJB, dasar serta garis panduan semasa.
+                                Ulasan dan surat maklumbalas rasmi akan dikeluarkan setelah disahkan oleh Ketua Jabatan.
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">Pertanyaan</div>
+                            <div class="section-content">
+                                Jika terdapat sebarang masalah, sila hubungi Unit Perancang, Jabatan Perancang 
+                                Bandar di Talian Tel: 07-219 8000
+                                Email: info@mbjb.gov.my
+                            </div>
+                        </div>
+                        
+                        <div class="footer">
+                            <div></div>
+                            <button class="button" onclick="goToPage(2)">Seterusnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Page 2: Applicant Information -->
+                    <div id="page2" class="page">
+                        <form id="applicationForm">
+                            <div class="form-section">
+                                <h2 class="form-section-title">Maklumat Pemohon</h2>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Nama Penuh <span class="required">*</span></label>
+                                    <input type="text" class="form-input" placeholder="Masukkan nama penuh seperti dalam kad pengenalan" required>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">No. Kad Pengenalan <span class="required">*</span></label>
+                                        <input type="text" class="form-input" id="icNumber" placeholder="XXXXXX-XX-XXXX" pattern="\d{6}-\d{2}-\d{4}" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">No. Telefon <span class="required">*</span></label>
+                                        <input type="tel" class="form-input" placeholder="01X-XXXXXXX" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Alamat E-mel <span class="required">*</span></label>
+                                    <input type="email" class="form-input" placeholder="nama@email.com" required>
+                                    <p class="help-text">Maklumat permohonan akan dihantar ke e-mel ini</p>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Alamat Surat Menyurat <span class="required">*</span></label>
+                                    <input type="text" class="form-input" placeholder="Alamat penuh" required>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Poskod <span class="required">*</span></label>
+                                        <input type="text" class="form-input" placeholder="XXXXX" pattern="\d{5}" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Negeri <span class="required">*</span></label>
+                                        <select class="form-input" required>
+                                            <option value="">Pilih Negeri</option>
+                                            <option value="PNG">Pulau Pinang</option>
+                                            <option value="KDH">Kedah</option>
+                                            <option value="PRK">Perak</option>
+                                            <option value="PLS">Perlis</option>
+                                            <option value="SEL">Selangor</option>
+                                            <option value="NSN">Negeri Sembilan</option>
+                                            <option value="MLK">Melaka</option>
+                                            <option value="JHR">Johor</option>
+                                            <option value="PHG">Pahang</option>
+                                            <option value="TRG">Terengganu</option>
+                                            <option value="KEL">Kelantan</option>
+                                            <option value="SRW">Sarawak</option>
+                                            <option value="SBH">Sabah</option>
+                                            <option value="WPK">WP Kuala Lumpur</option>
+                                            <option value="WPL">WP Labuan</option>
+                                            <option value="WPP">WP Putrajaya</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h2 class="form-section-title">Maklumat Tanah/Lot</h2>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">No. Lot <span class="required">*</span></label>
+                                        <input type="text" class="form-input" placeholder="Contoh: 1234" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Mukim <span class="required">*</span></label>
+                                        <select class="form-input" required>
+                                            <option value="">Pilih Mukim</option>
+                                            <option value="MK01">Mukim Bandar</option>
+                                            <option value="MK02">Mukim Plentong</option>
+                                            <option value="MK03">Mukim Pulai</option>
+                                            <option value="MK04">Mukim Tebrau</option>
+                                            <option value="MK05">Mukim Pontian Kechil</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="footer">
+                            <button class="button button-back" onclick="goToPage(1)">Sebelumnya</button>
+                            <button class="button" onclick="validateAndNext()">Seterusnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Page 3: Document Upload -->
+                    <div id="page3" class="page">
+                        <div class="form-section">
+                            <div class="form-section-title">Salinan Geran*</div>
+                            <div class="section-content" style="margin-bottom: 15px; font-size: 13px; text-align: justify;">
+                                Sila muat naik geran yang lengkap (beserta pelan lokasi). Jika Lot PT, sila pastikan pelan lokasi 
+                                yang menunjukkan lot sekitar yang bukan lot PT (untuk rujukan pihak jabatan) atau dokumen 
+                                lain yang berkaitan.
+                            </div>
+                            <div class="upload-box">
+                                <button class="upload-button" onclick="triggerFileUpload('geran')">Letakkan fail di sini atau pilih fail</button>
+                                <input type="file" id="geran-file" style="display: none;" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'geran')">
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-section-title">Salinan Dokumen Sokongan</div>
+                            <div class="section-content" style="margin-bottom: 15px; font-size: 13px; text-align: justify;">
+                                Sila muat naik (jika ada) dokumen sokongan tambahan (contoh : surat kelulusan 
+                                perlindungan semula / kelulusan permohonan kebenaran merancang) untuk rujukan jabatan.
+                            </div>
+                            <div class="upload-box">
+                                <button class="upload-button" onclick="triggerFileUpload('dokumen')">Letakkan fail di sini atau pilih fail</button>
+                                <input type="file" id="dokumen-file" style="display: none;" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event, 'dokumen')">
+                            </div>
+                        </div>
+                        
+                        <div class="form-section" style="background-color: #fef3e3; padding: 20px; border-radius: 4px; border: 1px solid #fad4a6;">
+                            <div class="form-section-title" style="color: #d84315;">Pengesahan & Pengakuan*</div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 14px;">
+                                    <input type="checkbox" id="pdpa-checkbox" style="margin-right: 10px; margin-top: 3px;" required>
+                                    <span style="line-height: 1.6; color: #333; text-align: justify; display: block;">
+                                        Saya mengesahkan bahawa semua maklumat yang diberikan adalah benar dan tepat. 
+                                        Saya faham bahawa maklumat peribadi saya akan digunakan untuk tujuan pemprosesan 
+                                        permohonan ini sahaja dan akan dilindungi mengikut Akta Perlindungan Data Peribadi 2010 (PDPA). 
+                                        Saya juga faham bahawa permohonan yang mengandungi maklumat palsu boleh ditolak atau 
+                                        dibatalkan tanpa sebarang bayaran balik.
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="footer">
+                            <button class="button button-back" onclick="goToPage(2)">Kembali</button>
+                            <button class="button button-submit" onclick="submitForm()">Hantar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Semakan Permohonan Page -->
+        <div id="semakanPage" class="semakan-page" style="display: none;">
+            <div class="semakan-container">
+                <div class="semakan-header">
+                    Semakan Permohonan Pengesahan Pengezonan
+                </div>
+                
+                <div class="search-section">
+                    <div class="search-row">
+                        <div class="form-group">
+                            <label class="form-label">No. Rujukan</label>
+                            <input type="text" class="form-input" id="searchRef" placeholder="Contoh: PZ/2025/123456">
+                        </div>
+                        
+                        <button class="search-button" onclick="searchApplications()">Cari</button>
+                    </div>
+                </div>
+                
+                <div class="table-section">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 8%;">No</th>
+                                <th style="width: 25%;">No. Rujukan</th>
+                                <th style="width: 15%;">No. Lot</th>
+                                <th style="width: 20%;">Mukim</th>
+                                <th style="width: 15%;">Status</th>
+                                <th style="width: 12%;">Tarikh</th>
+                                <th style="width: 15%;">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsTable">
+                            <tr>
+                                <td>1</td>
+                                <td>PZ/2025/123456</td>
+                                <td>1234</td>
+                                <td>Mukim Bandar</td>
+                                <td><span class="status-badge status-processing">Dalam Proses</span></td>
+                                <td>15/06/2025</td>
+                                <td>
+                                    <button class="action-button view" onclick="viewApplication('PZ/2025/123456')" title="Lihat Permohonan">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>PZ/2025/987654</td>
+                                <td>5678</td>
+                                <td>Mukim Plentong</td>
+                                <td><span class="status-badge status-approved">Diluluskan</span></td>
+                                <td>10/06/2025</td>
+                                <td>
+                                    <button class="action-button view" onclick="viewApplication('PZ/2025/987654')" title="Lihat Permohonan">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-button download" onclick="downloadLetter('PZ/2025/987654')" title="Muat Turun Surat">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>PZ/2025/456789</td>
+                                <td>9012</td>
+                                <td>Mukim Tebrau</td>
+                                <td><span class="status-badge status-pending">Menunggu</span></td>
+                                <td>12/06/2025</td>
+                                <td>
+                                    <button class="action-button view" onclick="viewApplication('PZ/2025/456789')" title="Lihat Permohonan">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>PZ/2025/789012</td>
+                                <td>3456</td>
+                                <td>Mukim Pulai</td>
+                                <td><span class="status-badge status-approved">Diluluskan</span></td>
+                                <td>08/06/2025</td>
+                                <td>
+                                    <button class="action-button view" onclick="viewApplication('PZ/2025/789012')" title="Lihat Permohonan">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-button download" onclick="downloadLetter('PZ/2025/789012')" title="Muat Turun Surat">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Site Inspection Page -->
+        <div id="siteInspectionPage" class="semakan-page" style="display: none;">
+            <div class="semakan-container">
+                <div class="semakan-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                        <span>Semakan Tapak - <span id="inspectionRefNumber"></span></span>
+                        <button class="search-button" onclick="backToAdmin()" style="background-color: #6c757d;">
+                            ← Kembali ke Admin
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Document Viewer Section -->
+                <div class="search-section">
+                    <div style="background-color: white; padding: 25px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h3 style="color: #2e2d6d; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 18px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            Dokumen Permohonan dan Lampiran
+                        </h3>
+                        
+                        <div class="document-listing">
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-filename">Original_Geran_Lot_2456.pdf</div>
+                                    <div class="document-details">Saiz: 2.4 MB • Dimuat naik: 20/06/2025 10:30 AM</div>
+                                </div>
+                                <div class="document-actions-simple">
+                                    <button class="action-btn-icon view" onclick="viewDocument('geran')" title="Lihat Dokumen">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn-icon download" onclick="downloadDocument('geran')" title="Muat Turun">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-filename">Survey_Plan_2456.pdf</div>
+                                    <div class="document-details">Saiz: 1.8 MB • Dimuat naik: 20/06/2025 10:32 AM</div>
+                                </div>
+                                <div class="document-actions-simple">
+                                    <button class="action-btn-icon view" onclick="viewDocument('sokongan')" title="Lihat Dokumen">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn-icon download" onclick="downloadDocument('sokongan')" title="Muat Turun">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-filename">Application_Form_PZ2025555123.pdf</div>
+                                    <div class="document-details">Saiz: 856 KB • Dimuat naik: 20/06/2025 10:28 AM</div>
+                                </div>
+                                <div class="document-actions-simple">
+                                    <button class="action-btn-icon view" onclick="viewDocument('borang')" title="Lihat Dokumen">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn-icon download" onclick="downloadDocument('borang')" title="Muat Turun">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- GIS Map Section -->
+                <div class="table-section">
+                    <div style="background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                            <h3 style="display: flex; align-items: center; gap: 10px; color: #2e2d6d; font-size: 18px; margin: 0;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2C15.31,2 18,4.66 18,7.95C18,12.41 12,19 12,19S6,12.41 6,7.95C6,4.66 8.69,2 12,2M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6Z"/>
+                                </svg>
+                                Peta GIS - Lot 2456, Mukim Bandar
+                            </h3>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="search-button" onclick="toggleMapView()" style="background-color: #17a2b8; padding: 8px 15px;">
+                                    <span id="mapToggleText">Peta Satelit</span>
+                                </button>
+                                <button class="search-button" onclick="openFullscreenMap()" style="background-color: #28a745; padding: 8px 15px;">
+                                    Skrin Penuh
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Advanced Map Search Controls -->
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e9ecef;">
+                            <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 15px; align-items: end;">
+                                <div>
+                                    <label style="display: block; color: #333; font-size: 13px; margin-bottom: 5px; font-weight: 500;">Sila masukkan no. lot untuk memulakan carian</label>
+                                    <input type="text" id="lotSearchInput" placeholder="Cari No. Lot" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+                                </div>
+                                <div style="min-width: 120px;">
+                                    <label style="display: block; color: #333; font-size: 13px; margin-bottom: 5px; font-weight: 500;">Kelegapan</label>
+                                    <input type="range" id="opacitySlider" min="0" max="100" value="80" style="width: 100%;" onchange="updateMapOpacity(this.value)">
+                                </div>
+                                <button class="search-button" onclick="searchLotOnMap()" style="background-color: #007bff; padding: 8px 15px;">
+                                    Cari Lot
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="gis-map-container">
+                            <div class="gis-map" id="gisMapView">
+                                <!-- OpenStreetMap Style Background -->
+                                <div class="map-content" id="mapContent" style="background: #f2f1f0; background-image: 
+                                    linear-gradient(90deg, #e8e8e8 1px, transparent 1px),
+                                    linear-gradient(#e8e8e8 1px, transparent 1px);
+                                    background-size: 20px 20px;">
+                                    
+                                    <!-- Road Lines -->
+                                    <div style="position: absolute; top: 15%; left: 0%; right: 0%; height: 8px; background: linear-gradient(90deg, #fdd835 0%, #fdd835 20%, #ffeb3b 20%, #ffeb3b 80%, #fdd835 80%); transform: skew(-5deg);"></div>
+                                    <div style="position: absolute; top: 50%; left: 30%; right: 0%; height: 6px; background: linear-gradient(90deg, #fdd835 0%, #fdd835 100%); transform: rotate(-15deg) translateY(-50%);"></div>
+                                    
+                                    <!-- Zone Areas -->
+                                    <div style="position: absolute; top: 20%; left: 10%; width: 25%; height: 35%; background: rgba(255, 193, 7, 0.4); border-radius: 8px;"></div>
+                                    <div style="position: absolute; top: 25%; right: 15%; width: 30%; height: 25%; background: rgba(233, 30, 99, 0.3); border-radius: 8px;"></div>
+                                    <div style="position: absolute; bottom: 25%; left: 15%; width: 35%; height: 30%; background: rgba(76, 175, 80, 0.3); border-radius: 8px;"></div>
+                                    <div style="position: absolute; top: 60%; right: 20%; width: 25%; height: 20%; background: rgba(33, 150, 243, 0.3); border-radius: 8px;"></div>
+                                    
+                                    <!-- Street Labels -->
+                                    <div style="position: absolute; top: 12%; left: 25%; color: #444; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px; border: 1px solid #ddd;">Jalan Kenyalang</div>
+                                    <div style="position: absolute; top: 52%; left: 45%; color: #444; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px; transform: rotate(-15deg); border: 1px solid #ddd;">Jalan Tebrau</div>
+                                    
+                                    <!-- Multiple Lot Numbers displayed directly on map -->
+                                    <div style="position: absolute; top: 30%; left: 15%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">2455</div>
+                                    <div style="position: absolute; top: 35%; left: 20%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">2456</div>
+                                    <div style="position: absolute; top: 40%; left: 25%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">2457</div>
+                                    <div style="position: absolute; top: 28%; left: 30%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">2458</div>
+                                    
+                                    <!-- Commercial area lots -->
+                                    <div style="position: absolute; top: 30%; right: 25%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">5360</div>
+                                    <div style="position: absolute; top: 35%; right: 30%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">5356</div>
+                                    <div style="position: absolute; top: 40%; right: 22%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">5354</div>
+                                    <div style="position: absolute; top: 45%; right: 28%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">5318</div>
+                                    
+                                    <!-- Industrial area lots -->
+                                    <div style="position: absolute; bottom: 35%; left: 20%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">6789</div>
+                                    <div style="position: absolute; bottom: 30%; left: 25%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">6790</div>
+                                    <div style="position: absolute; bottom: 40%; left: 30%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">6791</div>
+                                    
+                                    <!-- More lots -->
+                                    <div style="position: absolute; top: 60%; right: 25%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">7234</div>
+                                    <div style="position: absolute; top: 65%; right: 30%; color: #333; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.95); padding: 3px 6px; border-radius: 3px; border: 1px solid #999;">7235</div>
+                                    
+                                    <!-- Highlighted Selected Lot -->
+                                    <div id="selectedLotMarker" style="position: absolute; top: 35%; left: 20%; background: rgba(255, 23, 68, 0.9); color: white; font-size: 12px; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: 2px solid #ff1744; box-shadow: 0 0 15px rgba(255, 23, 68, 0.6); animation: pulse 2s infinite;">2456</div>
+                                    
+                                    <!-- Map Controls on Right Side -->
+                                    <div class="map-toolbar">
+                                        <button class="map-tool-btn" onclick="zoomIn()" title="Zoom In">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                                            </svg>
+                                        </button>
+                                        
+                                        <button class="map-tool-btn" onclick="zoomOut()" title="Zoom Out">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                                <path d="M7 9h5v1H7z"/>
+                                            </svg>
+                                        </button>
+                                        
+                                        <button class="map-tool-btn" onclick="drawPolygon()" title="Lukis Poligon">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M7,2V4H9V2H7M17,2V4H19V2H17M11,2V4H13V2H11M13,4V6H15V4H13M4,5V7H6V5H4M18,5V7H20V5H18M9,6V8H11V6H9M6,7V9H8V7H6M2,8V10H4V8H2M20,8V10H22V8H20M8,9V11H10V9H8M15,9V11H17V9H15M4,11V13H6V11H4M18,11V13H20V11H18M9,12V14H11V12H9M6,13V15H8V13H6M2,14V16H4V14H2M20,14V16H22V14H20M8,15V17H10V15H8M15,15V17H17V15H15M4,17V19H6V17H4M18,17V19H20V17H18M7,18V20H9V18H7M11,18V20H13V18H11M13,20V22H15V20H13M17,20V22H19V20H17"/>
+                                            </svg>
+                                        </button>
+                                        
+                                        <button class="map-tool-btn" onclick="resetView()" title="Reset Pandangan">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>
+                                            </svg>
+                                        </button>
+                                        
+                                        <button class="map-tool-btn" onclick="showLegend()" title="Petunjuk/Legenda">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                                            </svg>
+                                        </button>
+                                        
+                                        <button class="map-tool-btn" onclick="toggleLayers()" title="Layer Peta">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,19.54L4.62,13.81L3,15.08L12,22.08L21,15.08L19.37,13.81"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="map-info-box">
+                                        <h4>Maklumat Lot Terpilih</h4>
+                                        <div id="selectedLotInfo">
+                                            <p><strong>No. Lot:</strong> <span id="displayLotNumber">2456</span></p>
+                                            <p><strong>Mukim:</strong> <span id="displayMukim">Bandar</span></p>
+                                            <p><strong>Keluasan:</strong> <span id="displayArea">0.25 ekar</span></p>
+                                            <p><strong>Zon Semasa:</strong> <span id="displayZone">Perumahan</span></p>
+                                            <p><strong>Koordinat:</strong> <span id="displayCoords">1.4927°N, 103.7414°E</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Site Inspection Actions -->
+                        <div style="margin-top: 25px; padding: 25px; background-color: #f8f9fa; border-radius: 8px;">
+                            <h4 style="color: #2e2d6d; margin-bottom: 20px; font-size: 16px;">Tindakan Semakan Tapak</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                <button class="site-action-btn" onclick="approveApplication()">
+                                    Luluskan Permohonan
+                                </button>
+                                <button class="site-action-btn" onclick="rejectApplication()">
+                                    Tolak Permohonan
+                                </button>
+                                <button class="site-action-btn" onclick="requestMoreInfo()">
+                                    Minta Maklumat Tambahan
+                                </button>
+                                <button class="site-action-btn" onclick="scheduleVisit()">
+                                    Jadualkan Lawatan Tapak
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="adminPage" class="semakan-page" style="display: none;">
+            <div class="semakan-container">
+                <div class="semakan-header">
+                    Panel Pentadbiran - Pengurusan Permohonan
+                </div>
+                
+                <div class="search-section">
+                    <div class="admin-search-row">
+                        <div class="form-group">
+                            <label class="form-label">No. Rujukan</label>
+                            <input type="text" class="form-input" id="adminSearchRef" placeholder="Contoh: PZ/2025/123456">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-input" id="adminSearchStatus">
+                                <option value="">Semua Status</option>
+                                <option value="pending">Menunggu Semakan</option>
+                                <option value="processing">Dalam Proses</option>
+                                <option value="approved">Diluluskan</option>
+                                <option value="rejected">Ditolak</option>
+                            </select>
+                        </div>
+                        
+                        <button class="search-button" onclick="searchAdminApplications()">Cari</button>
+                    </div>
+                </div>
+                
+                <div class="table-section">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 4%;">No</th>
+                                <th style="width: 13%;">No. Rujukan</th>
+                                <th style="width: 18%;">Nama Pemohon</th>
+                                <th style="width: 8%;">No. Lot</th>
+                                <th style="width: 12%;">Mukim</th>
+                                <th style="width: 11%;">Status</th>
+                                <th style="width: 10%;">Tarikh</th>
+                                <th style="width: 10%;">Peringkat</th>
+                                <th style="width: 14%;">Tindakan Admin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminApplicationsTable">
+                            <tr>
+                                <td>1</td>
+                                <td>PZ/2025/555123</td>
+                                <td>Nurul Aina binti Aziz</td>
+                                <td>2456</td>
+                                <td>Mukim Bandar</td>
+                                <td><span class="status-badge status-pending">Menunggu Semakan</span></td>
+                                <td>20/06/2025</td>
+                                <td>Semakan Dokumen</td>
+                                <td>
+                                    <button class="action-button view" onclick="adminViewDocuments('PZ/2025/555123')" title="Semakan Dokumen Permohonan dan Lampiran">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-button" style="background-color: #ffc107; color: #000;" onclick="adminSiteInspection('PZ/2025/555123')" title="Semakan Tapak">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>PZ/2025/556789</td>
+                                <td>Wong Li Ming</td>
+                                <td>7890</td>
+                                <td>Mukim Tebrau</td>
+                                <td><span class="status-badge status-processing">Dalam Proses</span></td>
+                                <td>19/06/2025</td>
+                                <td>Semakan Tapak</td>
+                                <td>
+                                    <button class="action-button view" onclick="adminViewDocuments('PZ/2025/556789')" title="Semakan Dokumen Permohonan dan Lampiran">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-button" style="background-color: #ffc107; color: #000;" onclick="adminSiteInspection('PZ/2025/556789')" title="Semakan Tapak">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>PZ/2025/557001</td>
+                                <td>Siti Aminah binti Rahman</td>
+                                <td>3321</td>
+                                <td>Mukim Pulai</td>
+                                <td><span class="status-badge status-pending">Menunggu Semakan</span></td>
+                                <td>18/06/2025</td>
+                                <td>Semakan Dokumen</td>
+                                <td>
+                                    <button class="action-button view" onclick="adminViewDocuments('PZ/2025/557001')" title="Semakan Dokumen Permohonan dan Lampiran">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-button" style="background-color: #ffc107; color: #000;" onclick="adminSiteInspection('PZ/2025/557001')" title="Semakan Tapak">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>PZ/2025/987654</td>
+                                <td>Siti Fatimah binti Hassan</td>
+                                <td>5678</td>
+                                <td>Mukim Plentong</td>
+                                <td><span class="status-badge status-approved">Diluluskan</span></td>
+                                <td>10/06/2025</td>
+                                <td>Selesai</td>
+                                <td>
+                                    <button class="action-button view" onclick="adminViewDocuments('PZ/2025/987654')" title="Semakan Dokumen Permohonan dan Lampiran">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-button download" onclick="adminGenerateLetter('PZ/2025/987654')" title="Jana Surat Kelulusan">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="success-icon">
+                <span class="checkmark">✓</span>
+            </div>
+            <h2 class="modal-title">Permohonan Berjaya Dihantar</h2>
+            <p class="modal-message">
+                Terima kasih. Permohonan anda telah berjaya dihantar. 
+                Sila semak e-mel anda untuk pengesahan penerimaan. 
+                Permohonan akan diproses dalam tempoh 14 hari.
+            </p>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                No. Rujukan: <strong>PZ/2025/<span id="refNumber"></span></strong>
+            </p>
+            <p style="font-size: 12px; color: #888; margin-bottom: 25px; font-style: italic;">
+                Sila simpan nombor rujukan ini untuk urusan semakan kemudian.
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="modal-button" onclick="printReference()">Cetak</button>
+                <button class="modal-button" onclick="closeModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Leaflet JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let currentView = 'landing'; // 'landing', 'form', 'semakan', 'admin', or 'siteInspection'
+        let map; // Global map variable
+        
+        // Initialize OpenStreetMap like the example
+        function initializeMap() {
+            // Check if we're on the site inspection page and map container exists
+            if (currentView === 'siteInspection' && document.getElementById('realMap')) {
+                // Initialize map centered on broader Johor Bahru area like the example
+                map = L.map('realMap').setView([1.4655, 103.7578], 13);
+                
+                // Add OpenStreetMap tiles - same as the example shown
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 19,
+                    minZoom: 10
+                }).addTo(map);
+                
+                // Add markers for different areas visible in Johor Bahru
+                const lotMarker = L.marker([1.4927, 103.7414]).addTo(map);
+                lotMarker.bindPopup('<b>Lot 2456</b><br>Mukim Bandar<br>0.25 ekar - Perumahan').openPopup();
+                
+                // Add marker for Tampoi area
+                const tampoiMarker = L.marker([1.4838, 103.7249]).addTo(map);
+                tampoiMarker.bindPopup('<b>Kawasan Tampoi</b><br>Mukim Plentong');
+                
+                // Add marker for Larkin area  
+                const larkinMarker = L.marker([1.4728, 103.7469]).addTo(map);
+                larkinMarker.bindPopup('<b>Kawasan Larkin</b><br>Mukim Bandar');
+                
+                // Add marker for Tebrau area
+                const tebrauMarker = L.marker([1.5055, 103.7844]).addTo(map);
+                tebrauMarker.bindPopup('<b>Kawasan Tebrau</b><br>Mukim Tebrau');
+                
+                // Sample area polygon for main inspection lot
+                const zoneBounds = [
+                    [1.4920, 103.7400],
+                    [1.4935, 103.7400], 
+                    [1.4935, 103.7430],
+                    [1.4920, 103.7430]
+                ];
+                
+                const zonePolygon = L.polygon(zoneBounds, {
+                    color: '#e74c3c',
+                    weight: 2,
+                    fillColor: '#e74c3c',
+                    fillOpacity: 0.1
+                }).addTo(map);
+                
+                zonePolygon.bindPopup('Kawasan Semakan Lot 2456<br>Zon Perumahan - Mukim Bandar');
+                
+                // Add scale control
+                L.control.scale().addTo(map);
+            }
+        }
+        
+        // Page Navigation Functions
+        function showLandingPage() {
+            document.getElementById('landingPage').style.display = 'block';
+            document.getElementById('formPage').style.display = 'none';
+            document.getElementById('semakanPage').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('siteInspectionPage').style.display = 'none';
+            currentView = 'landing';
+            updateActiveNavigation('menu-utama');
+            showAllNavigation();
+            
+            // Restore sticky headers
+            document.querySelector('.main-nav').style.position = 'sticky';
+            document.querySelector('.government-header').style.position = 'sticky';
+        }
+        
+        function showFormPage() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('formPage').style.display = 'block';
+            document.getElementById('semakanPage').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('siteInspectionPage').style.display = 'none';
+            currentView = 'form';
+            updateActiveNavigation('borang-permohonan');
+            hideNonEssentialNavigation();
+            // Reset form to page 1
+            goToPage(1);
+            
+            // Restore sticky headers
+            document.querySelector('.main-nav').style.position = 'sticky';
+            document.querySelector('.government-header').style.position = 'sticky';
+        }
+        
+        function showSemakanPage() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('formPage').style.display = 'none';
+            document.getElementById('semakanPage').style.display = 'block';
+            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('siteInspectionPage').style.display = 'none';
+            currentView = 'semakan';
+            updateActiveNavigation('semakan-permohonan');
+            showAllNavigation();
+            
+            // Keep sticky headers for better navigation
+            document.querySelector('.main-nav').style.position = 'sticky';
+            document.querySelector('.government-header').style.position = 'sticky';
+        }
+        
+        function showAdminPage() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('formPage').style.display = 'none';
+            document.getElementById('semakanPage').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'block';
+            document.getElementById('siteInspectionPage').style.display = 'none';
+            currentView = 'admin';
+            updateActiveNavigation('admin');
+            showAllNavigation();
+            
+            // Keep sticky headers for better navigation
+            document.querySelector('.main-nav').style.position = 'sticky';
+            document.querySelector('.government-header').style.position = 'sticky';
+        }
+        
+        function showSiteInspectionPage(refNumber) {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('formPage').style.display = 'none';
+            document.getElementById('semakanPage').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('siteInspectionPage').style.display = 'block';
+            currentView = 'siteInspection';
+            
+            // Set reference number
+            document.getElementById('inspectionRefNumber').textContent = refNumber;
+            
+            // Keep sticky headers for better navigation
+            document.querySelector('.main-nav').style.position = 'sticky';
+            document.querySelector('.government-header').style.position = 'sticky';
+            
+            // Initialize map after a short delay to ensure DOM is ready
+            setTimeout(() => {
+                initializeMap();
+            }, 100);
+        }
+        
+        function showAllNavigation() {
+            document.getElementById('permohonanDropdown').style.display = 'block';
+            document.getElementById('adminNav').style.display = 'block';
+        }
+        
+        function hideNonEssentialNavigation() {
+            // Don't hide admin nav, only hide dropdown
+            document.getElementById('permohonanDropdown').style.display = 'none';
+            // Keep admin visible
+        }
+        
+        function updateActiveNavigation(activeItem) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-link, .dropdown-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class based on current page
+            if (activeItem === 'menu-utama') {
+                document.querySelector('.nav-link[onclick="showLandingPage()"]').classList.add('active');
+            } else if (activeItem === 'borang-permohonan') {
+                document.querySelector('.dropdown-link[onclick="showFormPage()"]').classList.add('active');
+            } else if (activeItem === 'semakan-permohonan') {
+                document.querySelector('.dropdown-link[onclick="showSemakanPage()"]').classList.add('active');
+            } else if (activeItem === 'admin') {
+                document.querySelector('.nav-link[onclick="showAdminPage()"]').classList.add('active');
+            }
+        }
+        
+        // Semakan Page Functions
+        function searchApplications() {
+            const refNumber = document.getElementById('searchRef').value.toLowerCase();
+            const tableBody = document.getElementById('applicationsTable');
+            const rows = tableBody.getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const refCell = rows[i].getElementsByTagName('td')[1];
+                
+                if (refCell) {
+                    const refText = refCell.textContent.toLowerCase();
+                    const matchRef = refNumber === '' || refText.includes(refNumber);
+                    
+                    if (matchRef) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+        
+        function viewApplication(refNumber) {
+            alert(`Melihat permohonan: ${refNumber}\n\nFungsi ini akan membuka maklumat lengkap permohonan.`);
+        }
+        
+        function downloadLetter(refNumber) {
+            alert(`Memuat turun surat pengesahan untuk: ${refNumber}\n\nSurat pengesahan akan dimuat turun dalam format PDF.`);
+        }
+        
+        // Admin Page Functions - Updated Flow
+        function searchAdminApplications() {
+            const refNumber = document.getElementById('adminSearchRef').value.toLowerCase();
+            const status = document.getElementById('adminSearchStatus').value.toLowerCase();
+            const tableBody = document.getElementById('adminApplicationsTable');
+            const rows = tableBody.getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const refCell = rows[i].getElementsByTagName('td')[1];
+                const statusCell = rows[i].getElementsByTagName('td')[5];
+                
+                if (refCell && statusCell) {
+                    const refText = refCell.textContent.toLowerCase();
+                    const statusText = statusCell.textContent.toLowerCase();
+                    
+                    const matchRef = refNumber === '' || refText.includes(refNumber);
+                    const matchStatus = status === '' || statusText.includes(status);
+                    
+                    if (matchRef && matchStatus) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+        
+        // Step 1: Semakan Dokumen Permohonan dan Lampiran
+        function adminViewDocuments(refNumber) {
+            alert(`[ADMIN] Semakan Dokumen Permohonan: ${refNumber}\n\n✓ Melihat semua dokumen yang dihantar:\n- Geran tanah\n- Dokumen sokongan\n- Borang permohonan\n\nStatus: Dokumen sedang disemak untuk kelengkapan.`);
+        }
+        
+        // Step 2: Semakan Tapak (open new page with GIS)
+        function adminSiteInspection(refNumber) {
+            showSiteInspectionPage(refNumber);
+        }
+        
+        // Site Inspection Page Functions
+        function backToAdmin() {
+            showAdminPage();
+        }
+        
+        function viewDocument(docType) {
+            const docTypes = {
+                'geran': 'Geran Tanah (Original_Geran_Lot_2456.pdf)',
+                'sokongan': 'Dokumen Sokongan (Survey_Plan_2456.pdf)', 
+                'borang': 'Borang Permohonan (Application_Form_PZ2025555123.pdf)'
+            };
+            
+            alert(`Membuka ${docTypes[docType]}\n\nDokumen akan dibuka dalam tab baru untuk semakan terperinci.`);
+        }
+        
+        function downloadDocument(docType) {
+            const docTypes = {
+                'geran': 'Original_Geran_Lot_2456.pdf',
+                'sokongan': 'Survey_Plan_2456.pdf',
+                'borang': 'Application_Form_PZ2025555123.pdf'
+            };
+            
+            alert(`Memuat turun ${docTypes[docType]}\n\nDokumen akan dimuat turun ke komputer anda.`);
+        }
+        
+        // Remove unused map functions
+        function toggleMapView() {
+            // Function removed
+        }
+        
+        function openFullscreenMap() {
+            // Function removed
+        }
+        
+        // Enhanced Map Functions for Real OpenStreetMap
+        function zoomIn() {
+            if (map) {
+                map.zoomIn();
+            } else {
+                alert('🔍 Zoom In - Memperbesar pandangan peta');
+            }
+        }
+        
+        function zoomOut() {
+            if (map) {
+                map.zoomOut();
+            } else {
+                alert('🔍 Zoom Out - Mengecilkan pandangan peta');
+            }
+        }
+        
+        function drawPolygon() {
+            alert('📐 Lukis Poligon - Alat melukis kawasan\n\nDalam sistem sebenar, fungsi ini membolehkan anda:\n• Melukis sempadan lot\n• Mengira keluasan kawasan\n• Menandakan zon khas\n\nMemerlukan plugin Leaflet.draw untuk fungsi penuh.');
+        }
+        
+        function resetView() {
+            if (map) {
+                // Reset to original Johor Bahru overview like the example
+                map.setView([1.4655, 103.7578], 13);
+                
+                // Remove search markers
+                map.eachLayer(function(layer) {
+                    if (layer.options.searchMarker) {
+                        map.removeLayer(layer);
+                    }
+                });
+            } else {
+                alert('🏠 Reset Pandangan - Kembali ke pandangan asal');
+            }
+        }
+        
+        function approveApplication() {
+            const refNumber = document.getElementById('inspectionRefNumber').textContent;
+            if (confirm(`Adakah anda pasti untuk MELULUSKAN permohonan ${refNumber}?\n\nTindakan ini akan:\n✓ Menghasilkan surat kelulusan\n✓ Mengemas kini status permohonan\n✓ Menghantar notifikasi kepada pemohon`)) {
+                alert(`✅ PERMOHONAN DILULUSKAN\n\nPermohonan ${refNumber} telah berjaya diluluskan.\n\nSurat kelulusan akan dijana dan dihantar kepada pemohon dalam masa 2 hari bekerja.`);
+                showAdminPage();
+            }
+        }
+        
+        function rejectApplication() {
+            const refNumber = document.getElementById('inspectionRefNumber').textContent;
+            const reason = prompt(`Sila masukkan sebab penolakan untuk permohonan ${refNumber}:\n\nContoh:\n- Tidak mematuhi peraturan zon\n- Dokumen tidak lengkap\n- Konflik dengan rancangan tempatan`);
+            
+            if (reason && reason.trim() !== '') {
+                alert(`❌ PERMOHONAN DITOLAK\n\nPermohonan ${refNumber} telah ditolak.\n\nSebab: ${reason}\n\nSurat penolakan akan dihantar kepada pemohon.`);
+                showAdminPage();
+            }
+        }
+        
+        function requestMoreInfo() {
+            const refNumber = document.getElementById('inspectionRefNumber').textContent;
+            const request = prompt(`Maklumat tambahan yang diperlukan untuk ${refNumber}:\n\nContoh:\n- Salinan geran yang lebih jelas\n- Pelan lokasi yang dikemas kini\n- Surat kebenaran dari pihak berkuasa lain`);
+            
+            if (request && request.trim() !== '') {
+                alert(`📝 PERMINTAAN MAKLUMAT TAMBAHAN\n\nPermintaan telah dihantar kepada pemohon:\n\n"${request}"\n\nPemohon akan menerima notifikasi dan permohonan akan ditangguhkan sehingga maklumat diterima.`);
+                showAdminPage();
+            }
+        }
+        
+        function scheduleVisit() {
+            const refNumber = document.getElementById('inspectionRefNumber').textContent;
+            const visitDate = prompt(`Jadualkan lawatan tapak untuk ${refNumber}\n\nMasukkan tarikh dan masa yang dicadangkan:\n\nContoh: 25/06/2025, 10:00 AM`);
+            
+            if (visitDate && visitDate.trim() !== '') {
+                alert(`📅 LAWATAN TAPAK DIJADUALKAN\n\nLawatan tapak untuk ${refNumber} telah dijadualkan:\n\nTarikh: ${visitDate}\n\nNotifikasi akan dihantar kepada:\n✓ Pemohon\n✓ Pasukan semakan tapak\n✓ Pengurus kes`);
+                showAdminPage();
+            }
+        }
+        
+        function adminGenerateLetter(refNumber) {
+            alert(`[ADMIN] Jana surat rasmi untuk: ${refNumber}\n\nPilihan dokumen:\n✓ Surat Kelulusan Rasmi\n✓ Sijil Pengesahan Zon\n✓ Laporan Semakan Tapak\n\nDokumen akan dijana dalam format PDF rasmi.`);
+        }
+        
+        // Form Navigation Functions
+        function updateTimeline(pageNumber) {
+            // Reset all steps
+            for (let i = 1; i <= 3; i++) {
+                const circle = document.getElementById('step' + i);
+                const label = document.getElementById('label' + i);
+                
+                if (i < pageNumber) {
+                    // Completed steps
+                    circle.className = 'step-circle completed';
+                    label.className = 'step-label completed';
+                    circle.innerHTML = '✓';
+                } else if (i === pageNumber) {
+                    // Active step
+                    circle.className = 'step-circle active';
+                    label.className = 'step-label active';
+                    circle.innerHTML = i;
+                } else {
+                    // Inactive steps
+                    circle.className = 'step-circle inactive';
+                    label.className = 'step-label';
+                    circle.innerHTML = i;
+                }
+            }
+            
+            // Update progress line
+            const progressLine = document.getElementById('timelineProgress');
+            let progressWidth = 0;
+            
+            if (pageNumber === 2) {
+                progressWidth = 50;
+            } else if (pageNumber === 3) {
+                progressWidth = 100;
+            }
+            
+            progressLine.style.width = progressWidth + '%';
+        }
+        
+        function goToPage(pageNumber) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show requested page
+            document.getElementById('page' + pageNumber).classList.add('active');
+            
+            // Update timeline
+            updateTimeline(pageNumber);
+            
+            currentPage = pageNumber;
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        function validateAndNext() {
+            const form = document.getElementById('applicationForm');
+            if (form.checkValidity()) {
+                goToPage(3);
+            } else {
+                form.reportValidity();
+            }
+        }
+        
+        function submitForm() {
+            // Check if required fields on page 3 are filled
+            const geranFile = document.getElementById('geran-file').files.length;
+            const pdpaCheckbox = document.getElementById('pdpa-checkbox').checked;
+            
+            if (geranFile === 0) {
+                alert('Sila muat naik salinan geran.');
+                return;
+            }
+            
+            if (!pdpaCheckbox) {
+                alert('Sila tandakan kotak pengesahan sebelum menghantar permohonan.');
+                return;
+            }
+            
+            // Generate reference number
+            const refNumber = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('refNumber').textContent = refNumber;
+            
+            // Show success modal
+            document.getElementById('successModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('show');
+            // Reset form and go back to first page
+            document.getElementById('applicationForm').reset();
+            // Reset file upload buttons
+            document.querySelectorAll('.upload-button').forEach(button => {
+                button.textContent = 'Letakkan fail di sini atau pilih fail';
+                button.style.color = '#6c757d';
+                button.style.fontWeight = 'normal';
+            });
+            // Reset PDPA checkbox
+            document.getElementById('pdpa-checkbox').checked = false;
+            goToPage(1);
+        }
+        
+        function printReference() {
+            const refNumber = document.getElementById('refNumber').textContent;
+            const printContent = `
+                <div style="font-family: Arial, sans-serif; padding: 40px; text-align: center;">
+                    <h1 style="color: #2e2d6d; margin-bottom: 30px;">MAJLIS BANDARAYA JOHOR BAHRU</h1>
+                    <h2 style="color: #333; margin-bottom: 40px;">Pengesahan Zon Guna Tanah</h2>
+                    <div style="border: 2px solid #2e2d6d; padding: 30px; margin: 20px 0; border-radius: 8px;">
+                        <h3 style="color: #2e2d6d; margin-bottom: 20px;">PERMOHONAN BERJAYA DIHANTAR</h3>
+                        <p style="font-size: 18px; margin-bottom: 10px;">No. Rujukan:</p>
+                        <h2 style="color: #2e2d6d; font-size: 24px; margin-bottom: 20px;">PZ/2025/${refNumber}</h2>
+                        <p style="font-size: 14px; color: #666;">Tarikh: ${new Date().toLocaleDateString('ms-MY')}</p>
+                    </div>
+                    <p style="font-size: 14px; color: #666; margin-top: 30px;">
+                        Sila simpan resit ini untuk rujukan kemudian.<br>
+                        Permohonan akan diproses dalam tempoh 14 hari bekerja.
+                    </p>
+                </div>
+            `;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        function triggerFileUpload(type) {
+            document.getElementById(type + '-file').click();
+        }
+        
+        function handleFileSelect(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                const uploadBox = event.target.parentElement;
+                const uploadButton = uploadBox.querySelector('.upload-button');
+                uploadButton.textContent = file.name;
+                uploadButton.style.color = '#2e2d6d';
+                uploadButton.style.fontWeight = '500';
+            }
+        }
+        
+        // Format IC number input
+        document.addEventListener('DOMContentLoaded', function() {
+            const icInput = document.getElementById('icNumber');
+            if (icInput) {
+                icInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 6) {
+                        value = value.slice(0, 6) + '-' + value.slice(6);
+                    }
+                    if (value.length >= 9) {
+                        value = value.slice(0, 9) + '-' + value.slice(9);
+                    }
+                    e.target.value = value;
+                });
+            }
+            
+            // Initialize landing page
+            showLandingPage();
+            
+            // Initialize timeline for form
+            updateTimeline(1);
+        });
+    </script>
+</body>
+</html>
